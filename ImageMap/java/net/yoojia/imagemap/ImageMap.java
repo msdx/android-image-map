@@ -16,9 +16,9 @@ import java.util.List;
  * date   :  2013-5-19
  * An HTML map like widget in an Android view
  */
-public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtension.OnShapeClickListener{
+public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtension.OnShapeActionListener {
 
-    private OnShapeClickListener onShapeClickListener;
+    private OnShapeActionListener onShapeClickListener;
 
     private HighlightImageView highlightImageView;
     private Bubble bubble;
@@ -39,12 +39,12 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
 
     private void initialImageView(Context context){
         highlightImageView = new HighlightImageView(context);
-        highlightImageView.setOnShapeClickListener(this);
+        highlightImageView.setOnShapeActionListener(this);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(highlightImageView,params);
     }
 
-    public void setOnShapeClickListener(OnShapeClickListener listener){
+    public void setOnShapeClickListener(OnShapeActionListener listener){
         this.onShapeClickListener = listener;
     }
 
@@ -96,6 +96,13 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
         }
         if(onShapeClickListener != null){
             onShapeClickListener.onShapeClick(shape,xOnImage,yOnImage);
+        }
+    }
+
+    @Override
+    public void onMoving(float deltaX, float deltaY) {
+        if(bubble != null){
+            bubble.onTranslate(deltaX, deltaY);
         }
     }
 

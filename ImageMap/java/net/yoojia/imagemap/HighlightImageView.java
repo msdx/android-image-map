@@ -11,6 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * HighlightImageView基于TouchImageView的功能，在ImageView的Canvas上绘制一些形状。
+ */
 public class HighlightImageView extends TouchImageView implements ShapeExtension {
 
 	public HighlightImageView(Context context) {
@@ -25,10 +28,10 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 	
 	private int savedShapesCount = 0;
 
-    private OnShapeClickListener onShapeClickListener;
+    private OnShapeActionListener onShapeActionListener;
 
-    public void setOnShapeClickListener(OnShapeClickListener onShapeClickListener){
-        this.onShapeClickListener = onShapeClickListener;
+    public void setOnShapeActionListener(OnShapeActionListener onShapeActionListener){
+        this.onShapeActionListener = onShapeActionListener;
     }
 
     @Override
@@ -72,10 +75,10 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 
     @Override
     protected void onClick(float xOnView, float yOnView) {
-        if(onShapeClickListener == null) return;
+        if(onShapeActionListener == null) return;
         for(Shape shape : shapesCache.values()){
             if(shape.inArea(xOnView,yOnView)){
-                onShapeClickListener.onShapeClick(shape,xOnView,yOnView);
+                onShapeActionListener.onShapeClick(shape, xOnView, yOnView);
                 // only one shape could be clicked
                 break;
             }
@@ -88,7 +91,7 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 		if(scaleFactor != 0){
             for(Shape shape : shapesCache.values()){
                 if(scaleFactor != 0){
-                    shape.scale(scaleFactor,scaleCenterX,scaleCenterY);
+                    shape.scale(scaleFactor, scaleCenterX, scaleCenterY);
                 }
             }
 		}
@@ -101,7 +104,9 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
             for(Shape shape : shapesCache.values()){
                 shape.translate(deltaX,deltaY);
             }
-            // onShapeClickListener.onMoving(deltaX,deltaY);
+            if(onShapeActionListener != null){
+                onShapeActionListener.onMoving(deltaX,deltaY);
+            }
         }
     }
 

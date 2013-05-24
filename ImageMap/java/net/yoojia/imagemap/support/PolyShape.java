@@ -126,6 +126,12 @@ public class PolyShape extends Shape {
 
     @Override
     public PointF getCenter() {
-        return null;
+        StringBuilder builder = new StringBuilder();
+        for(int i=0;i<pointCount;i++){
+            builder.append(xPoints.get(i)).append(",").append(yPoints.get(i));
+            builder.append(" ");
+        }
+        String[] point = getCenterCoord(builder.toString()).split(",");
+        return new PointF(Float.parseFloat(point[0]),Float.parseFloat(point[1]));
     }
 }

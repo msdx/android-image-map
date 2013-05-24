@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
+import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 import net.yoojia.imagemap.support.*;
 
@@ -14,21 +16,34 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //
         setContentView(R.layout.activity_main);
 
         ImageMap map = (ImageMap) findViewById(R.id.imagemap);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.pink_girl,new BitmapFactory.Options());
         map.setMapBitmap(bitmap);
 
-        // set shape click listener
-        map.setOnShapeClickListener(new ShapeExtension.OnShapeClickListener() {
+        // set a bubble
+        TextView bubble = new TextView(this);
+        bubble.setPadding(10,10,10,10);
+        bubble.setBackgroundColor(Color.RED);
+
+        map.setBubbleView(bubble,new Bubble.BubbleDisplayer() {
             @Override
-            public void onShapeClick(Shape shape, float xOnImage, float yOnImage) {
-                String msg = "Shape "+shape.tag+" clicked !";
-                Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
+            public void onDisplay(Shape shape, View bubbleView) {
+                TextView bubble = (TextView) bubbleView;
+                bubble.setText(shape.tag.toString());
             }
         });
+
+//        // set shape click listener
+//        map.setOnShapeActionListener(new ShapeExtension.OnShapeActionListener() {
+//            @Override
+//            public void onShapeClick(Shape shape, float xOnImage, float yOnImage) {
+//                String msg = "Shape "+shape.tag+" clicked !";
+//                Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
+//
+//            }
+//        });
 
         // set color
         // circle

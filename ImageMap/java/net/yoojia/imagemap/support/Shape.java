@@ -67,5 +67,78 @@ public abstract class Shape {
     public abstract boolean inArea(float x,float y);
 	
     public abstract PointF getCenter();
-	
+
+    public static String getCenterCoord(final String _coords){
+        if (_coords == null || _coords.trim().length() == 0)
+            return null;
+
+        try {
+            String coords = _coords.trim();
+            String[] pts = coords.split(" ");
+            int nPts = pts.length;
+            float x = 0;
+            float y = 0;
+            float f;
+            int j = nPts-1;
+            String p1;
+            String p2;
+
+            for (int i = 0; i < nPts; j = i++) {
+                p1 = pts[i].trim();
+                if (p1.length() == 0)
+                    continue;
+
+                float p1_x = Float.parseFloat(p1.split(",")[0]);
+                float p1_y = Float.parseFloat(p1.split(",")[1]);
+
+                p2 = pts[j].trim();
+                if (p2.length() == 0)
+                    continue;
+
+                float p2_x = Float.parseFloat(p2.split(",")[0]);
+                float p2_y = Float.parseFloat(p2.split(",")[1]);
+
+                f = p1_x * p2_y - p2_x * p1_y;
+                x +=(p1_x + p2_x) * f;
+                y +=(p1_y + p2_y) * f;
+            }
+
+            f = area(pts) * 6;
+
+            return x/f + ","+ y/f;
+        } catch (Throwable e) {
+            return null;
+        }
+    }
+
+    private static float area(String[] pts) {
+        float area = 0;
+        int nPts = pts.length;
+        int j = nPts-1;
+        String p1;
+        String p2;
+
+        for (int i = 0; i < nPts; j = i++) {
+            p1 = pts[i].trim();
+            if (p1.length() == 0)
+                continue;
+
+            float p1_x = Float.parseFloat(p1.split(",")[0]);
+            float p1_y = Float.parseFloat(p1.split(",")[1]);
+
+            p2 = pts[j].trim();
+            if (p2.length() == 0)
+                continue;
+
+            float p2_x = Float.parseFloat(p2.split(",")[0]);
+            float p2_y = Float.parseFloat(p2.split(",")[1]);
+
+            area += p1_x * p2_y;
+            area -= p1_y * p2_x;
+        }
+
+        area/=2;
+        return area;
+    };
+
 }
