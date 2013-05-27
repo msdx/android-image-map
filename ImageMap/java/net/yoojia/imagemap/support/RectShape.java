@@ -72,7 +72,7 @@ public class RectShape extends Shape{
     }
 
     @Override
-    public PointF getCenter() {
+    public PointF getCenterPoint() {
         float centerX = (left + right)/2.0f;
         float centerY = (top + bottom)/2.0f;
         return new PointF(centerX,centerY);

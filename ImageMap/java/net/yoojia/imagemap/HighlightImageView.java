@@ -28,10 +28,10 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 	
 	private int savedShapesCount = 0;
 
-    private OnShapeActionListener onShapeActionListener;
+    private OnShapeActionListener onShapeClickListener;
 
-    public void setOnShapeActionListener(OnShapeActionListener onShapeActionListener){
-        this.onShapeActionListener = onShapeActionListener;
+    public void setOnShapeClickListener(OnShapeActionListener onShapeClickListener){
+        this.onShapeClickListener = onShapeClickListener;
     }
 
     @Override
@@ -65,22 +65,26 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 		super.onDraw(canvas);
         canvas.save();
         for(Shape shape : shapesCache.values()){
-            shape.draw(canvas);
+            shape.onDraw(canvas);
         }
         onDrawWithCanvas(canvas);
         canvas.restore();
 	}
 
+    /**
+     * 如果继承HighlightImageView，并需要在Canvas上绘制，可以Override这个方法来实现。
+     * @param canvas 画布
+     */
     protected void onDrawWithCanvas(Canvas canvas){}
 
     @Override
     protected void onClick(float xOnView, float yOnView) {
-        if(onShapeActionListener == null) return;
+        if(onShapeClickListener == null) return;
         for(Shape shape : shapesCache.values()){
             if(shape.inArea(xOnView,yOnView)){
-                onShapeActionListener.onShapeClick(shape, xOnView, yOnView);
-                // only one shape could be clicked
-                break;
+                // 如果一个形状被点击，通过监听接口回调给点击事件的关注者。
+                onShapeClickListener.onShapeClick(shape, xOnView, yOnView);
+                break; // 只有一个形状可以被点击
             }
         }
     }
@@ -91,7 +95,7 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 		if(scaleFactor != 0){
             for(Shape shape : shapesCache.values()){
                 if(scaleFactor != 0){
-                    shape.scale(scaleFactor, scaleCenterX, scaleCenterY);
+                    shape.onScale(scaleFactor, scaleCenterX, scaleCenterY);
                 }
             }
 		}
@@ -102,10 +106,7 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
         super.postTranslate(deltaX, deltaY);
         if( !(deltaX == 0 && deltaY == 0)){
             for(Shape shape : shapesCache.values()){
-                shape.translate(deltaX,deltaY);
-            }
-            if(onShapeActionListener != null){
-                onShapeActionListener.onMoving(deltaX,deltaY);
+                shape.onTranslate(deltaX, deltaY);
             }
         }
     }

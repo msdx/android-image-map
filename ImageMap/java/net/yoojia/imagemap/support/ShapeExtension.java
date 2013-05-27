@@ -9,6 +9,7 @@ import java.util.List;
 public interface ShapeExtension{
 
     public interface OnShapeActionListener {
+
         /**
          * 当一个Shape被点击
          * @param shape
@@ -17,14 +18,12 @@ public interface ShapeExtension{
          */
         void onShapeClick(Shape shape, float xOnImage, float yOnImage);
 
-        /**
-         * 产生移动。可以在此方法中处理BubbleView的移动
-         * @param deltaX
-         * @param deltaY
-         */
-        void onMoving(float deltaX, float deltaY);
     }
 
+    /**
+     * 添加形状
+     * @param shape 形状描述
+     */
     void addShape(Shape shape);
 
     void addShapes(List<Shape> shapes);

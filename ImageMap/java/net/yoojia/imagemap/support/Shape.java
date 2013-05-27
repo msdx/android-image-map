@@ -58,15 +58,52 @@ public abstract class Shape {
         setValues(args);
     }
 
+    /**
+     * 由HightlightImageView调度
+     * @param scale 缩放量
+     * @param centerX 缩放中心 x
+     * @param centerY 缩放中心 y
+     */
+    public final void onScale(float scale,float centerX,float centerY){
+        scale(scale, centerX, centerY);
+        if(displayBubble != null){
+            displayBubble.showAtShape(this);
+        }
+    }
+
+    /**
+     * 由HightlightImageView调度
+     * @param deltaX 移动量 x
+     * @param deltaY 移动量 y
+     */
+    public final void onTranslate(float deltaX,float deltaY){
+        translate(deltaX,deltaY);
+        if(displayBubble != null){
+            displayBubble.showAtShape(this);
+        }
+    }
+
+    /**
+     * 由HightlightImageView调度。
+     * @param canvas 绘制画布
+     */
+    public final void onDraw(Canvas canvas){
+        draw(canvas);
+        // 如果当前Shape与Bubble有关联，则将Bubble也显示出来
+        if(displayBubble != null){
+            displayBubble.showAtShape(this);
+        }
+    }
+
     public abstract void draw(Canvas canvas);
 
-	public abstract void scale(float scale,float centerX,float centerY);
+	public abstract void scale(float scale, float centerX, float centerY);
 
     public abstract void translate(float deltaX,float deltaY);
 
     public abstract boolean inArea(float x,float y);
 	
-    public abstract PointF getCenter();
+    public abstract PointF getCenterPoint();
 
     public static String getCenterCoord(final String _coords){
         if (_coords == null || _coords.trim().length() == 0)
@@ -139,6 +176,6 @@ public abstract class Shape {
 
         area/=2;
         return area;
-    };
+    }
 
 }

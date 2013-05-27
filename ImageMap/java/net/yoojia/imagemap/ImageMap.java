@@ -18,8 +18,6 @@ import java.util.List;
  */
 public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtension.OnShapeActionListener {
 
-    private OnShapeActionListener onShapeClickListener;
-
     private HighlightImageView highlightImageView;
     private Bubble bubble;
 
@@ -39,19 +37,11 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
 
     private void initialImageView(Context context){
         highlightImageView = new HighlightImageView(context);
-        highlightImageView.setOnShapeActionListener(this);
+        highlightImageView.setOnShapeClickListener(this);
         LayoutParams params = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         addView(highlightImageView,params);
     }
 
-    public void setOnShapeClickListener(OnShapeActionListener listener){
-        this.onShapeClickListener = listener;
-    }
-
-    /**
-     * Set a bubble view.
-     * @param bubbleView a view object for display on image map.
-     */
     public void setBubbleView(View bubbleView) {
         setBubbleView(bubbleView,null);
     }
@@ -69,6 +59,20 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
         bubble.setDisplayer(displayer);
         addView(bubble.view);
         bubble.view.setVisibility(View.INVISIBLE);
+    }
+
+    public void toggleBubbleView(){
+        if(bubble != null){
+            int visible = bubble.view.isShown() ? View.INVISIBLE : View.VISIBLE;
+            bubble.view.setVisibility(visible);
+        }
+    }
+
+    public void addShapeAndRefToBubble(Shape shape){
+        addShape(shape);
+        if(bubble != null){
+            shape.createBubbleRelation(bubble);
+        }
     }
 
     @Override
@@ -93,16 +97,6 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
         }
         if(bubble != null){
             bubble.showAtShape(shape);
-        }
-        if(onShapeClickListener != null){
-            onShapeClickListener.onShapeClick(shape,xOnImage,yOnImage);
-        }
-    }
-
-    @Override
-    public void onMoving(float deltaX, float deltaY) {
-        if(bubble != null){
-            bubble.onTranslate(deltaX, deltaY);
         }
     }
 

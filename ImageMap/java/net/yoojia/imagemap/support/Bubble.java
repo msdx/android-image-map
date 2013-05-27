@@ -13,20 +13,23 @@ import android.widget.FrameLayout;
  */
 public class Bubble {
 
-    public interface BubbleDisplayer {
-        void onDisplay(Shape shape, View bubbleView);
-    }
-
-    private BubbleDisplayer displayer;
+    static final boolean IS_API_11_LATER = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
     public final View view;
+    public final PointF position = new PointF();
+
+    private BubbleDisplayer displayer;
 
     public Bubble(View view){
         this.view = view;
         final int wrapContent = ViewGroup.LayoutParams.WRAP_CONTENT;
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(wrapContent,wrapContent);
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(wrapContent,wrapContent);
         this.view.setLayoutParams(params);
         this.view.setClickable(true);
+    }
+
+    public interface BubbleDisplayer {
+        void onDisplay(Shape shape, View bubbleView);
     }
 
     /**
@@ -44,59 +47,63 @@ public class Bubble {
     public void showAtShape(Shape shape){
         if(view == null) return;
         shape.createBubbleRelation(this);
-        resetPosition(shape);
+        setBubbleViewAtPosition(shape.getCenterPoint());
         if (displayer != null){
             displayer.onDisplay(shape, view);
         }
         view.setVisibility(View.VISIBLE);
     }
 
-    /**
-     * Reset the bubble view to the other shape.
-     * @param shape
-     */
-    public void resetPosition(Shape shape){
-        if(view != null){
-            PointF center = shape.getCenter();
-            float posX = center.x - view.getWidth()/2;
-            float posY = center.y - view.getHeight();
-            if(isSDK_11_Later()){
-                view.setX(posX);
-                view.setY(posY);
-            }else{
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-                if(params != null){
-                    params.leftMargin = (int)posX;
-                    params.topMargin = (int)posY;
-                }
-            }
-
-        }
+    public void onScale(float scale,float scaleCenterX, float scaleCenterY){
+        PointF newCenter = ScaleUtility.scaleByPoint(position.x,position.y,scaleCenterX,scaleCenterY,scale);
+        setBubbleViewAtPosition(newCenter.x * scale,newCenter.y * scale);
     }
 
     /**
      * The image translated, sync translate the bubble view.
-     * @param deltaX
-     * @param deltaY
+     * @param deltaX delta x
+     * @param deltaY delta y
      */
     public void onTranslate(float deltaX,float deltaY){
         if(view != null && view.isShown()){
-            if(isSDK_11_Later()){
-                float x = view.getX();
-                float y = view.getY();
-                view.setX(x+deltaX);
-                view.setY(y+deltaY);
-            }else{
-                FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-                if(params != null){
-                    params.leftMargin += (int)deltaX;
-                    params.topMargin += (int)deltaY;
-                }
+           setBubbleViewByOffset(deltaX, deltaY);
+        }
+    }
+
+    private void setBubbleViewAtPosition(PointF center){
+        float posX = center.x - view.getWidth()/2;
+        float posY = center.y - view.getHeight();
+        setBubbleViewAtPosition(posX, posY);
+    }
+
+    private void setBubbleViewAtPosition(float x, float y){
+        position.set(x,y);
+        if(IS_API_11_LATER){
+            view.setX(x);
+            view.setY(y);
+        }else{
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+            if(params != null){
+                params.leftMargin = (int)x;
+                params.topMargin = (int)y;
             }
         }
     }
 
-    boolean isSDK_11_Later(){
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    private void setBubbleViewByOffset(float deltaX, float deltaY){
+        if(IS_API_11_LATER){
+            float x = view.getX() + deltaX;
+            float y = view.getY() + deltaY;
+            view.setX(x);
+            view.setY(y);
+            position.set(x,y);
+        }else{
+            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
+            if(params != null){
+                int x = (params.leftMargin += (int)deltaX);
+                int y = (params.topMargin += (int)deltaY);
+                position.set(x,y);
+            }
+        }
     }
 }

@@ -18,6 +18,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // set image
         ImageMap map = (ImageMap) findViewById(R.id.imagemap);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.pink_girl,new BitmapFactory.Options());
         map.setMapBitmap(bitmap);
@@ -49,7 +50,10 @@ public class MainActivity extends Activity {
         // circle
         Shape black = new CircleShape("black", Color.BLACK);
         black.setValues(633,122,15);
-        map.addShape(black);
+
+        // 设置一个Shape，并在初始显示时，将Bubble显示到它的位置上
+        map.addShapeAndRefToBubble(black);
+
 
         // circle
         Shape red = new CircleShape("red", Color.BLACK);
@@ -81,6 +85,7 @@ public class MainActivity extends Activity {
         Shape white = new PolyShape("white",0x8962a0);
         white.setValues(559,270, 599,239, 627,265, 642,267, 668,266, 680,294, 664,303, 669,323, 690,325, 712,310, 720,311, 713,335, 715,369, 722,390, 744,443, 745,456, 717,475, 673,481, 636,477, 604,458, 586,439, 591,423, 590,398, 571,336, 561,273);
         map.addShape(white);
+
     }
 
 }

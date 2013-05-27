@@ -1,8 +1,3 @@
-/**
- * author : 桥下一粒砂 (chenyoca@gmail.com)
- * date   : 13-5-21
- * TODO
- */
 package net.yoojia.imagemap.support;
 
 import android.graphics.Canvas;
@@ -11,14 +6,17 @@ import android.graphics.PointF;
 
 import java.util.ArrayList;
 
+/**
+ * author : 桥下一粒砂 (chenyoca@gmail.com)
+ * date   : 13-5-21
+ * TODO
+ */
 public class PolyShape extends Shape {
 
     ArrayList<Float> xPoints = new ArrayList<Float>();
     ArrayList<Float> yPoints = new ArrayList<Float>();
 
-    // centroid point for this poly
-    float _x;
-    float _y;
+    PointF centroidPoint;
 
     int pointCount;
 
@@ -48,8 +46,6 @@ public class PolyShape extends Shape {
         }
         pointCount = xPoints.size();
 
-        // add point zero to the end to make
-        // computing area and centroid easier
         xPoints.add(xPoints.get(0));
         yPoints.add(yPoints.get(0));
 
@@ -64,8 +60,7 @@ public class PolyShape extends Shape {
         }
         cx /= (6 * area());
         cy /= (6 * area());
-        _x = Math.abs((int)cx);
-        _y = Math.abs((int)cy);
+        centroidPoint = new PointF((float)cx, (float)cy);
     }
 
     public double area() {
@@ -125,7 +120,9 @@ public class PolyShape extends Shape {
     }
 
     @Override
-    public PointF getCenter() {
+    public PointF getCenterPoint() {
+//        computeCentroid();
+//        return centroidPoint;
         StringBuilder builder = new StringBuilder();
         for(int i=0;i<pointCount;i++){
             builder.append(xPoints.get(i)).append(",").append(yPoints.get(i));

@@ -35,7 +35,7 @@ public class CircleShape extends Shape {
 	}
 
     @Override
-	public PointF getCenter(){
+	public PointF getCenterPoint(){
 		return center;
 	}
 
@@ -46,14 +46,10 @@ public class CircleShape extends Shape {
 	}
 
 	@Override
-	public void scale(float scale,float centerX,float centerY) {
+	public void scale(float scale, float centerX, float centerY) {
         PointF newCenter = ScaleUtility.scaleByPoint(center.x,center.y,centerX,centerY,scale);
         radius *= scale;
         center.set(newCenter.x,newCenter.y);
-        //update the bubble position
-        if( displayBubble != null ){
-            displayBubble.resetPosition(this);
-        }
 	}
 
     @Override
