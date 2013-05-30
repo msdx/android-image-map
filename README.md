@@ -33,34 +33,29 @@ An android view like html map tag.
    
 	//取得在XML中布局的ImageMap对象，并设置图片
 
-    ImageMap map = (ImageMap) findViewById(R.id.imagemap);
-        Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.pink_girl,new BitmapFactory.Options());
-        map.setMapBitmap(bitmap);
+   // set image
+   ImageMap map = (ImageMap) findViewById(R.id.imagemap);
+   Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.imm_01, new BitmapFactory.Options());
+   map.setMapBitmap(bitmap);
 
-    // 设置Shape被点击时的监听
-    // 注意：同一时刻只有一个Shape被监听点击
-	map.setOnShapeClickListener(new ShapeExtension.OnShapeClickListener() {
-	    @Override
-	    public void onShapeClick(Shape shape, float xOnImage, float yOnImage) {
-	        String msg = "Shape "+shape.tag+" clicked !";
-	        Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
-	    }
-	});
+   View bubble = getLayoutInflater().inflate(R.layout.popup,null);
 
-	// 圆形
-	// "black"是唯一标识这个Shape的字符串，不可重复。
-    Shape black = new CircleShape("black", Color.BLACK);
-    black.setValues(633,122,15);
-    map.addShape(black);
+   map.setBubbleView(bubble,new Bubble.BubbleDisplayer() {
+       @Override
+       public void onDisplay(Shape shape, View bubbleView) {
+           ImageView logo = (ImageView) bubbleView.findViewById(R.id.logo);
+           TextView name = (TextView) bubbleView.findViewById(R.id.name);
 
-    // 矩形
-    Shape black = new CircleShape("black", Color.BLACK);
-    black.setValues(633,122,15);
-    map.addShape(black);
+           name.setText(shape.tag.toString());
+           logo.setImageResource(R.drawable.kfc_logo);
+       }
+   });
 
-    // 多边形
-    Shape black = new CircleShape("black", Color.BLACK);
-    black.setValues(633,122,15);
-    map.addShape(black);
+   // 设置一个形状
+   // circle
+   CircleShape black = new CircleShape("KFC Fastfood", Color.BLUE);
+   black.setValues("292.35898,133.64102,15");
+
+
 
  ```
