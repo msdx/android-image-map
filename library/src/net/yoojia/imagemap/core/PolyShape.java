@@ -1,8 +1,9 @@
-package net.yoojia.imagemap.support;
+package net.yoojia.imagemap.core;
 
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.PointF;
+import net.yoojia.imagemap.support.ScaleUtility;
 
 import java.util.ArrayList;
 
@@ -52,7 +53,9 @@ public class PolyShape extends Shape {
         computeCentroid();
     }
 
-    public void computeCentroid() {
+
+
+	public void computeCentroid() {
         double cx = 0.0, cy = 0.0;
         for (int i = 0; i < pointCount; i++) {
             cx = cx + (xPoints.get(i) + xPoints.get(i+1)) * (yPoints.get(i) * xPoints.get(i+1) - xPoints.get(i) * yPoints.get(i+1));
@@ -88,10 +91,20 @@ public class PolyShape extends Shape {
         canvas.drawPath(path, drawPaint);
     }
 
+	@Override
+	public void onScale (float scale) {
+		for(int i=0;i<pointCount;i++){
+			float newX = xPoints.get(i) * scale;
+			float newY = yPoints.get(i) * scale;
+			xPoints.set(i, newX);
+			yPoints.set(i, newY);
+		}
+	}
+
     @Override
-    public void scale(float scale, float centerX, float centerY) {
+    public void scaleBy (float scale, float centerX, float centerY) {
         for(int i=0;i<pointCount;i++){
-            PointF newPoint = ScaleUtility.scaleByPoint(xPoints.get(i),yPoints.get(i),centerX,centerY,scale);
+            PointF newPoint = ScaleUtility.scaleByPoint(xPoints.get(i), yPoints.get(i), centerX, centerY, scale);
             xPoints.set(i, newPoint.x);
             yPoints.set(i, newPoint.y);
         }
@@ -121,8 +134,6 @@ public class PolyShape extends Shape {
 
     @Override
     public PointF getCenterPoint() {
-//        computeCentroid();
-//        return centroidPoint;
         StringBuilder builder = new StringBuilder();
         for(int i=0;i<pointCount;i++){
             builder.append(xPoints.get(i)).append(",").append(yPoints.get(i));

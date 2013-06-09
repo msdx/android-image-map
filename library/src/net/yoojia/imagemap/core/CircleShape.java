@@ -1,7 +1,8 @@
-package net.yoojia.imagemap.support;
+package net.yoojia.imagemap.core;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import net.yoojia.imagemap.support.ScaleUtility;
 
 public class CircleShape extends Shape {
 	
@@ -46,10 +47,17 @@ public class CircleShape extends Shape {
 	}
 
 	@Override
-	public void scale(float scale, float centerX, float centerY) {
-        PointF newCenter = ScaleUtility.scaleByPoint(center.x,center.y,centerX,centerY,scale);
+	public void scaleBy (float scale, float centerX, float centerY) {
+        PointF newCenter = ScaleUtility.scaleByPoint(center.x, center.y, centerX, centerY, scale);
         radius *= scale;
         center.set(newCenter.x,newCenter.y);
+	}
+
+	@Override
+	public void onScale(float scale){
+//		scaleBy = (float)Math.sqrt(scaleBy);
+		radius *= scale;
+		center.set( center.x *= scale , center.y *= scale );
 	}
 
     @Override

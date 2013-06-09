@@ -1,6 +1,9 @@
 package net.yoojia.imagemap.support;
 
 import android.graphics.Color;
+import net.yoojia.imagemap.core.CircleShape;
+import net.yoojia.imagemap.core.PolyShape;
+import net.yoojia.imagemap.core.Shape;
 
 /**
  * author : 桥下一粒砂 (chenyoca@gmail.com)

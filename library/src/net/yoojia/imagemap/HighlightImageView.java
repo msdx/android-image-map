@@ -3,8 +3,8 @@ package net.yoojia.imagemap;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.util.AttributeSet;
-import net.yoojia.imagemap.support.Shape;
-import net.yoojia.imagemap.support.ShapeExtension;
+import net.yoojia.imagemap.core.Shape;
+import net.yoojia.imagemap.core.ShapeExtension;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,18 +33,11 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 
     @Override
 	public void addShape(Shape shape){
+
 		shapesCache.put(shape.tag, shape);
 		postInvalidate();
 	}
 
-    @Override
-	public void addShapes(List<Shape> shapes){
-		for(Shape shape : shapes){
-			shapesCache.put(shape.tag, shape);
-		}
-		postInvalidate();
-	}
-	
     @Override
 	public void removeShape(Object tag){
 		if(shapesCache.containsKey(tag)){
@@ -79,7 +72,7 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
     protected void onDrawWithCanvas(Canvas canvas){}
 
     @Override
-    protected void onClick(float xOnView, float yOnView) {
+    protected void onViewClick (float xOnView, float yOnView) {
         if(onShapeClickListener == null) return;
         for(Shape shape : shapesCache.values()){
             if(shape.inArea(xOnView,yOnView)){
@@ -102,9 +95,15 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 		}
 	}
 
+//	private float absoluteDeltaX = 0;
+//	private float absoluteDeltaY = 0;
+
     @Override
     protected void postTranslate(float deltaX, float deltaY) {
-        super.postTranslate(deltaX, deltaY);
+//		absoluteDeltaX += deltaX;
+//		absoluteDeltaY += deltaY;
+//		System.out.println("绝对偏移：x = "+absoluteDeltaX+" ,y = "+absoluteDeltaY);
+		super.postTranslate(deltaX, deltaY);
         if( !(deltaX == 0 && deltaY == 0)){
             for(Shape shape : shapesCache.values()){
                 shape.onTranslate(deltaX, deltaY);

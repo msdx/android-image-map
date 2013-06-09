@@ -3,10 +3,11 @@
  * date   : 13-5-21
  * TODO
  */
-package net.yoojia.imagemap.support;
+package net.yoojia.imagemap.core;
 
 import android.graphics.Canvas;
 import android.graphics.PointF;
+import net.yoojia.imagemap.support.ScaleUtility;
 
 public class RectShape extends Shape{
 
@@ -34,16 +35,24 @@ public class RectShape extends Shape{
         bottom = coords[3];
     }
 
-    @Override
+	@Override
+	public void onScale (float scale) {
+		left *= scale;
+		top *= scale;
+		right *= scale;
+		bottom *= scale;
+	}
+
+	@Override
     public void draw(Canvas canvas) {
         drawPaint.setAlpha(alaph);
         canvas.drawRect(left,top,right,bottom,drawPaint);
     }
 
     @Override
-    public void scale(float scale, float centerX, float centerY) {
+    public void scaleBy (float scale, float centerX, float centerY) {
 
-        PointF leftTop = ScaleUtility.scaleByPoint(left,top,centerX,centerY,scale);
+        PointF leftTop = ScaleUtility.scaleByPoint(left, top, centerX, centerY, scale);
         left = leftTop.x;
         top = leftTop.y;
 

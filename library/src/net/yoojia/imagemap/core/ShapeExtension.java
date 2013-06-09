@@ -1,6 +1,4 @@
-package net.yoojia.imagemap.support;
-
-import java.util.List;
+package net.yoojia.imagemap.core;
 
 /**
  * ShapeExtension是出于ImageMap继承于FrameLayout而又需要嵌入到HighlightImageView内部过程而设计的。
@@ -25,12 +23,6 @@ public interface ShapeExtension{
      * @param shape 形状描述
      */
     void addShape(Shape shape);
-
-    /**
-     * 添加一组形状
-     * @param shapes 一组形状描述
-     */
-    void addShapes(List<Shape> shapes);
 
     /**
      * 删除指定Tag的形状

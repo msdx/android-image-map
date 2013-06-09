@@ -2,19 +2,18 @@ package net.yoojia.imagemap;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.FrameLayout;
-import net.yoojia.imagemap.support.Bubble;
-import net.yoojia.imagemap.support.Shape;
-import net.yoojia.imagemap.support.ShapeExtension;
-
-import java.util.List;
+import net.yoojia.imagemap.core.Bubble;
+import net.yoojia.imagemap.core.Shape;
+import net.yoojia.imagemap.core.ShapeExtension;
 
 /**
  * author :  chenyoca@gmail.com
  * date   :  2013-5-19
- * An HTML map like widget in an Android view
+ * An HTML map like widget in an Android viewcontroller
  */
 public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtension.OnShapeActionListener {
 
@@ -42,47 +41,39 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
         addView(highlightImageView, params);
     }
 
-    public void setBubbleView(View bubbleView) {
-        setBubbleView(bubbleView, null);
-    }
-
     /**
-     * Aet a bubble view and it's displayer interface.
-     * @param bubbleView a view object for display on image map.
-     * @param displayer the display interface for bubble view render.
+     * Set a bubble view controller and it's renderDelegate interface.
+     * @param bubbleView A view controller object for display on image map.
+     * @param renderDelegate The display interface for bubble view controller render.
      */
-    public void setBubbleView(View bubbleView,Bubble.BubbleDisplayer displayer){
+    public void setBubbleView(View bubbleView,Bubble.RenderDelegate renderDelegate){
         if(bubbleView == null){
             throw new IllegalArgumentException("View for bubble cannot be null !");
         }
         bubble = new Bubble(bubbleView);
-        bubble.setDisplayer(displayer);
-        addView(bubble.view);
+        bubble.setRenderDelegate(renderDelegate);
+        addView(bubble);
         bubble.view.setVisibility(View.INVISIBLE);
     }
 
-    public void showBubbleView(boolean show){
-        if(bubble != null){
-            int visible = show ? View.VISIBLE : View.GONE;
-            bubble.view.setVisibility(visible);
-        }
-    }
-
-    public void addShapeAndRefToBubble(Shape shape){
+	/**
+	 * 添加Shape，并关联到Bubble的位置
+	 * @param shape Shape
+	 */
+    public void addShapeAndRefToBubble(final Shape shape){
         addShape(shape);
         if(bubble != null){
-            shape.createBubbleRelation(bubble);
+			shape.createBubbleRelation(bubble);
         }
     }
 
     @Override
     public void addShape(Shape shape) {
-        highlightImageView.addShape(shape);
-    }
-
-    @Override
-    public void addShapes(List<Shape> shapes) {
-        highlightImageView.addShapes(shapes);
+		float scale = highlightImageView.getScale();
+		shape.onScale(scale);
+		PointF offset = highlightImageView.getAbsoluteOffset();
+		shape.onTranslate(offset.x , offset.y);
+		highlightImageView.addShape(shape);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package net.yoojia.imagemap.support;
+package net.yoojia.imagemap.core;
 
 import android.graphics.PointF;
 import android.os.Build;
@@ -11,69 +11,66 @@ import android.widget.FrameLayout;
  * date   : 13-5-19
  * The bubble wrapper.
  */
-public class Bubble {
+public class Bubble extends FrameLayout{
 
     static final boolean IS_API_11_LATER = Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
 
     public final View view;
     public final PointF position = new PointF();
 
-    private BubbleDisplayer displayer;
+	private Shape currentShape;
+
+    private RenderDelegate renderDelegate;
 
     public Bubble(View view){
+		super(view.getContext());
         this.view = view;
         final int wrapContent = ViewGroup.LayoutParams.WRAP_CONTENT;
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(wrapContent,wrapContent);
         this.view.setLayoutParams(params);
         this.view.setClickable(true);
+		addView(view);
     }
 
-    public interface BubbleDisplayer {
+//	@Override
+//	protected void onMeasure (int widthMeasureSpec, int heightMeasureSpec) {
+//		super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//		if(currentShape != null){
+//			showAtShape(currentShape);
+//		}
+//	}
+
+	public interface RenderDelegate {
         void onDisplay(Shape shape, View bubbleView);
     }
 
     /**
-     * Set the interface for bubble view render.
-     * @param displayer displayer implments
+     * Set the interface for bubble viewcontroller render.
+     * @param renderDelegate renderDelegate implments
      */
-    public void setDisplayer(BubbleDisplayer displayer) {
-        this.displayer = displayer;
+    public void setRenderDelegate (RenderDelegate renderDelegate) {
+        this.renderDelegate = renderDelegate;
     }
 
     /**
-     * Show the bubble view on the shape.
+     * Show the bubble viewcontroller on the shape.
      * @param shape the shape to show on
      */
     public void showAtShape(Shape shape){
         if(view == null) return;
+		currentShape = shape;
         shape.createBubbleRelation(this);
         setBubbleViewAtPosition(shape.getCenterPoint());
-        if (displayer != null){
-            displayer.onDisplay(shape, view);
+        if (renderDelegate != null){
+            renderDelegate.onDisplay(shape, view);
         }
         view.setVisibility(View.VISIBLE);
-    }
-
-    public void onScale(float scale,float scaleCenterX, float scaleCenterY){
-        PointF newCenter = ScaleUtility.scaleByPoint(position.x,position.y,scaleCenterX,scaleCenterY,scale);
-        setBubbleViewAtPosition(newCenter.x * scale,newCenter.y * scale);
-    }
-
-    /**
-     * The image translated, sync translate the bubble view.
-     * @param deltaX delta x
-     * @param deltaY delta y
-     */
-    public void onTranslate(float deltaX,float deltaY){
-        if(view != null && view.isShown()){
-           setBubbleViewByOffset(deltaX, deltaY);
-        }
     }
 
     private void setBubbleViewAtPosition(PointF center){
         float posX = center.x - view.getWidth()/2;
         float posY = center.y - view.getHeight();
-        setBubbleViewAtPosition(posX, posY);
+		setBubbleViewAtPosition(posX, posY);
     }
 
     private void setBubbleViewAtPosition(float x, float y){
@@ -90,20 +87,4 @@ public class Bubble {
         }
     }
 
-    private void setBubbleViewByOffset(float deltaX, float deltaY){
-        if(IS_API_11_LATER){
-            float x = view.getX() + deltaX;
-            float y = view.getY() + deltaY;
-            view.setX(x);
-            view.setY(y);
-            position.set(x,y);
-        }else{
-            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) view.getLayoutParams();
-            if(params != null){
-                int x = (params.leftMargin += (int)deltaX);
-                int y = (params.topMargin += (int)deltaY);
-                position.set(x,y);
-            }
-        }
-    }
 }
