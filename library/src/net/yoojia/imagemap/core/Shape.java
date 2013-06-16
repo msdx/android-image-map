@@ -93,7 +93,7 @@ public abstract class Shape {
         draw(canvas);
         // 如果当前Shape与Bubble有关联，则将Bubble也显示出来
         if(displayBubble != null){
-            displayBubble.showAtShape(this);
+			displayBubble.showAtShape(this);
         }
     }
 

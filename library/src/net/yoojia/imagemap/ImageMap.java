@@ -87,6 +87,9 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
             item.cleanBubbleRelation();
         }
         highlightImageView.clearShapes();
+		if (bubble != null){
+			bubble.view.setVisibility(View.GONE);
+		}
     }
 
     @Override

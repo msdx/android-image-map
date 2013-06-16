@@ -95,14 +95,8 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 		}
 	}
 
-//	private float absoluteDeltaX = 0;
-//	private float absoluteDeltaY = 0;
-
     @Override
     protected void postTranslate(float deltaX, float deltaY) {
-//		absoluteDeltaX += deltaX;
-//		absoluteDeltaY += deltaY;
-//		System.out.println("绝对偏移：x = "+absoluteDeltaX+" ,y = "+absoluteDeltaY);
 		super.postTranslate(deltaX, deltaY);
         if( !(deltaX == 0 && deltaY == 0)){
             for(Shape shape : shapesCache.values()){
