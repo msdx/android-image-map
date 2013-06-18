@@ -3,11 +3,9 @@ package net.yoojia.imagemap;
 import android.content.Context;
 import android.graphics.*;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.view.accessibility.AccessibilityEvent;
 import android.widget.ImageView;
 
 /**
@@ -169,18 +167,28 @@ public class TouchImageView extends ImageView {
         scrolling();
     }
 
+	public PointF getAbsoluteCenter (){
+		fillAbsoluteOffset();
+		return new PointF( Math.abs(absoluteOffsetX) + viewWidth/2,Math.abs(absoluteOffsetY) + viewHeight/2 );
+	}
+
+	public void moveBy (float deltaX, float deltaY){
+		checkAndSetTranslate(deltaX, deltaY);
+		setImageMatrix(imageUsingMatrix);
+	}
+
 	/**
 	 * 惯性滚动
 	 */
 	private void scrolling (){
-		final float deltaX = lastDelta.x * velocity, deltaY = lastDelta.y * velocity;
+		final float deltaX = lastDelta.x * velocity;
+		final float deltaY = lastDelta.y * velocity;
 		if (deltaX > viewWidth || deltaY > viewHeight) return;
 		velocity *= FRICTION;
 		if (Math.abs(deltaX) < 0.1 && Math.abs(deltaY) < 0.1) {
 			return;
 		}
-		checkAndSetTranslate(deltaX, deltaY);
-		setImageMatrix(imageUsingMatrix);
+		moveBy(deltaX, deltaY);
 	}
 
 	/**
@@ -282,7 +290,8 @@ public class TouchImageView extends ImageView {
         imageUsingMatrix.getValues(matrixValues);
         absoluteOffsetX = matrixValues[Matrix.MTRANS_X];
         absoluteOffsetY = matrixValues[Matrix.MTRANS_Y];
-    }
+//		System.out.println(String.format("::: 图像的绝对偏移坐标 (%f,%f) ::::",absoluteOffsetX,absoluteOffsetY));
+	}
     
     @Override
     public void setImageBitmap(Bitmap bm) {
