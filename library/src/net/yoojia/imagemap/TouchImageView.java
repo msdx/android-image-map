@@ -1,7 +1,10 @@
 package net.yoojia.imagemap;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
@@ -10,6 +13,7 @@ import android.widget.ImageView;
 
 /**
  * TouchImageView设计为一个具有独立完整功能的View。可缩放，拖动图片。
+ * TouchImageView - A full View with Scale/Drag support.
  */
 public class TouchImageView extends ImageView {
 

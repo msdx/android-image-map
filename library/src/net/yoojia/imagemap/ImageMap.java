@@ -65,6 +65,7 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
 
 	/**
 	 * 添加Shape，并关联到Bubble的位置
+	 * - Add a shape and set reference to the bubble.
 	 * @param shape Shape
 	 */
     public void addShapeAndRefToBubble(final Shape shape){
@@ -73,7 +74,6 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
 			shape.createBubbleRelation(bubble);
         }
     }
-
 
 	@Override
 	public void onTranslate (float deltaX, float deltaY) {
@@ -87,6 +87,7 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
 		shape.onScale(scale);
 
 		// 将图像中心移动到目标形状的中心坐标上
+		// Move the center point of the image to the target shape center.
 		PointF from = highlightImageView.getAbsoluteCenter();
 		PointF to = shape.getCenterPoint();
 		TranslateAnimation movingAnimation = new TranslateAnimation(from.x,to.x,from.y,to.y);
@@ -95,7 +96,6 @@ public class ImageMap extends FrameLayout implements ShapeExtension,ShapeExtensi
 		movingAnimation.setDuration(500);
 		movingAnimation.setFillAfter(true);
 		viewForAnimation.startAnimation(movingAnimation);
-
 
 		PointF offset = highlightImageView.getAbsoluteOffset();
 		shape.onTranslate(offset.x , offset.y);

@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * HighlightImageView基于TouchImageView的功能，在ImageView的Canvas上绘制一些形状。
+ * Based on TouchImageView class, Design for draw shapes on canvas of ImageView
  */
 public class HighlightImageView extends TouchImageView implements ShapeExtension {
 
@@ -67,6 +68,7 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
 
     /**
      * 如果继承HighlightImageView，并需要在Canvas上绘制，可以Override这个方法来实现。
+	 * - Override this method for draw something on canvas when YourClass extends HighlightImageView.
      * @param canvas 画布
      */
     protected void onDrawWithCanvas(Canvas canvas){}
@@ -77,8 +79,9 @@ public class HighlightImageView extends TouchImageView implements ShapeExtension
         for(Shape shape : shapesCache.values()){
             if(shape.inArea(xOnView,yOnView)){
                 // 如果一个形状被点击，通过监听接口回调给点击事件的关注者。
+				// Callback by listener when a shape has been clicked
                 onShapeClickListener.onShapeClick(shape, xOnView, yOnView);
-                break; // 只有一个形状可以被点击
+                break; // 只有一个形状可以被点击 - Only one shape can be click
             }
         }
     }
